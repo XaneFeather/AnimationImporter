@@ -66,7 +66,7 @@ namespace AnimationImporter
 			}
 		}
 
-		static class JSONLogger
+		static class JsonLogger
 		{
 #if USE_UNITY_DEBUGGING
 			public static void Log(string str)
@@ -87,7 +87,7 @@ namespace AnimationImporter
 #endif
 		}
 
-		public enum JSONValueType
+		public enum JsonValueType
 		{
 			String,
 			Number,
@@ -97,47 +97,47 @@ namespace AnimationImporter
 			Null
 		}
 
-		public class JSONValue
+		public class JsonValue
 		{
 
-			public JSONValue(JSONValueType type)
+			public JsonValue(JsonValueType type)
 			{
 				Type = type;
 			}
 
-			public JSONValue(string str)
+			public JsonValue(string str)
 			{
-				Type = JSONValueType.String;
+				Type = JsonValueType.String;
 				Str = str;
 			}
 
-			public JSONValue(double number)
+			public JsonValue(double number)
 			{
-				Type = JSONValueType.Number;
+				Type = JsonValueType.Number;
 				Number = number;
 			}
 
-			public JSONValue(JSONObject obj)
+			public JsonValue(JsonObject obj)
 			{
 				if (obj == null)
 				{
-					Type = JSONValueType.Null;
+					Type = JsonValueType.Null;
 				}
 				else {
-					Type = JSONValueType.Object;
+					Type = JsonValueType.Object;
 					Obj = obj;
 				}
 			}
 
-			public JSONValue(JSONArray array)
+			public JsonValue(JsonArray array)
 			{
-				Type = JSONValueType.Array;
+				Type = JsonValueType.Array;
 				Array = array;
 			}
 
-			public JSONValue(bool boolean)
+			public JsonValue(bool boolean)
 			{
-				Type = JSONValueType.Boolean;
+				Type = JsonValueType.Boolean;
 				Boolean = boolean;
 			}
 
@@ -145,67 +145,67 @@ namespace AnimationImporter
 			/// Construct a copy of the JSONValue given as a parameter
 			/// </summary>
 			/// <param name="value"></param>
-			public JSONValue(JSONValue value)
+			public JsonValue(JsonValue value)
 			{
 				Type = value.Type;
 				switch (Type)
 				{
-					case JSONValueType.String:
+					case JsonValueType.String:
 						Str = value.Str;
 						break;
 
-					case JSONValueType.Boolean:
+					case JsonValueType.Boolean:
 						Boolean = value.Boolean;
 						break;
 
-					case JSONValueType.Number:
+					case JsonValueType.Number:
 						Number = value.Number;
 						break;
 
-					case JSONValueType.Object:
+					case JsonValueType.Object:
 						if (value.Obj != null)
 						{
-							Obj = new JSONObject(value.Obj);
+							Obj = new JsonObject(value.Obj);
 						}
 						break;
 
-					case JSONValueType.Array:
-						Array = new JSONArray(value.Array);
+					case JsonValueType.Array:
+						Array = new JsonArray(value.Array);
 						break;
 				}
 			}
 
-			public JSONValueType Type { get; private set; }
+			public JsonValueType Type { get; private set; }
 			public string Str { get; set; }
 			public double Number { get; set; }
-			public JSONObject Obj { get; set; }
-			public JSONArray Array { get; set; }
+			public JsonObject Obj { get; set; }
+			public JsonArray Array { get; set; }
 			public bool Boolean { get; set; }
-			public JSONValue Parent { get; set; }
+			public JsonValue Parent { get; set; }
 
-			public static implicit operator JSONValue(string str)
+			public static implicit operator JsonValue(string str)
 			{
-				return new JSONValue(str);
+				return new JsonValue(str);
 			}
 
-			public static implicit operator JSONValue(double number)
+			public static implicit operator JsonValue(double number)
 			{
-				return new JSONValue(number);
+				return new JsonValue(number);
 			}
 
-			public static implicit operator JSONValue(JSONObject obj)
+			public static implicit operator JsonValue(JsonObject obj)
 			{
-				return new JSONValue(obj);
+				return new JsonValue(obj);
 			}
 
-			public static implicit operator JSONValue(JSONArray array)
+			public static implicit operator JsonValue(JsonArray array)
 			{
-				return new JSONValue(array);
+				return new JsonValue(array);
 			}
 
-			public static implicit operator JSONValue(bool boolean)
+			public static implicit operator JsonValue(bool boolean)
 			{
-				return new JSONValue(boolean);
+				return new JsonValue(boolean);
 			}
 
 			/// <returns>String representation of this JSONValue</returns>
@@ -213,22 +213,22 @@ namespace AnimationImporter
 			{
 				switch (Type)
 				{
-					case JSONValueType.Object:
+					case JsonValueType.Object:
 						return Obj.ToString();
 
-					case JSONValueType.Array:
+					case JsonValueType.Array:
 						return Array.ToString();
 
-					case JSONValueType.Boolean:
+					case JsonValueType.Boolean:
 						return Boolean ? "true" : "false";
 
-					case JSONValueType.Number:
+					case JsonValueType.Number:
 						return Number.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
-					case JSONValueType.String:
+					case JsonValueType.String:
 						return "\"" + Str + "\"";
 
-					case JSONValueType.Null:
+					case JsonValueType.Null:
 						return "null";
 				}
 				return "null";
@@ -236,12 +236,12 @@ namespace AnimationImporter
 
 		}
 
-		public class JSONArray : IEnumerable<JSONValue>
+		public class JsonArray : IEnumerable<JsonValue>
 		{
 
-			private readonly List<JSONValue> values = new List<JSONValue>();
+			private readonly List<JsonValue> values = new List<JsonValue>();
 
-			public JSONArray()
+			public JsonArray()
 			{
 			}
 
@@ -249,12 +249,12 @@ namespace AnimationImporter
 			/// Construct a new array and copy each value from the given array into the new one
 			/// </summary>
 			/// <param name="array"></param>
-			public JSONArray(JSONArray array)
+			public JsonArray(JsonArray array)
 			{
-				values = new List<JSONValue>();
+				values = new List<JsonValue>();
 				foreach (var v in array.values)
 				{
-					values.Add(new JSONValue(v));
+					values.Add(new JsonValue(v));
 				}
 			}
 
@@ -262,12 +262,12 @@ namespace AnimationImporter
 			/// Add a JSONValue to this array
 			/// </summary>
 			/// <param name="value"></param>
-			public void Add(JSONValue value)
+			public void Add(JsonValue value)
 			{
 				values.Add(value);
 			}
 
-			public JSONValue this[int index]
+			public JsonValue this[int index]
 			{
 				get { return values[index]; }
 				set { values[index] = value; }
@@ -299,7 +299,7 @@ namespace AnimationImporter
 				return stringBuilder.ToString();
 			}
 
-			public IEnumerator<JSONValue> GetEnumerator()
+			public IEnumerator<JsonValue> GetEnumerator()
 			{
 				return values.GetEnumerator();
 			}
@@ -314,9 +314,9 @@ namespace AnimationImporter
 			/// </summary>
 			/// <param name="jsonString"></param>
 			/// <returns>A new JSONArray object if successful, null otherwise.</returns>
-			public static JSONArray Parse(string jsonString)
+			public static JsonArray Parse(string jsonString)
 			{
-				var tempObject = JSONObject.Parse("{ \"array\" :" + jsonString + '}');
+				var tempObject = JsonObject.Parse("{ \"array\" :" + jsonString + '}');
 				return tempObject == null ? null : tempObject.GetValue("array").Array;
 			}
 
@@ -339,7 +339,7 @@ namespace AnimationImporter
 					values.RemoveAt(index);
 				}
 				else {
-					JSONLogger.Error("index out of range: " + index + " (Expected 0 <= index < " + values.Count + ")");
+					JsonLogger.Error("index out of range: " + index + " (Expected 0 <= index < " + values.Count + ")");
 				}
 			}
 
@@ -349,9 +349,9 @@ namespace AnimationImporter
 			/// <param name="lhs"></param>
 			/// <param name="rhs"></param>
 			/// <returns>A new JSONArray that is the result of adding all of the right-hand side array's values to the left-hand side array.</returns>
-			public static JSONArray operator +(JSONArray lhs, JSONArray rhs)
+			public static JsonArray operator +(JsonArray lhs, JsonArray rhs)
 			{
-				var result = new JSONArray(lhs);
+				var result = new JsonArray(lhs);
 				foreach (var value in rhs.values)
 				{
 					result.Add(value);
@@ -361,10 +361,10 @@ namespace AnimationImporter
 
 		}
 
-		public class JSONObject : IEnumerable<KeyValuePair<string, JSONValue>>
+		public class JsonObject : IEnumerable<KeyValuePair<string, JsonValue>>
 		{
 
-			private enum JSONParsingState
+			private enum JsonParsingState
 			{
 				Object,
 				Array,
@@ -380,14 +380,14 @@ namespace AnimationImporter
 				Null
 			}
 
-			private readonly IDictionary<string, JSONValue> values = new Dictionary<string, JSONValue>();
+			private readonly IDictionary<string, JsonValue> values = new Dictionary<string, JsonValue>();
 
 #if PARSE_ESCAPED_UNICODE
-			private static readonly Regex unicodeRegex = new Regex(@"\\u([0-9a-fA-F]{4})");
-			private static readonly byte[] unicodeBytes = new byte[2];
+			private static readonly Regex UnicodeRegex = new Regex(@"\\u([0-9a-fA-F]{4})");
+			private static readonly byte[] UnicodeBytes = new byte[2];
 #endif
 
-			public JSONObject()
+			public JsonObject()
 			{
 			}
 
@@ -395,15 +395,15 @@ namespace AnimationImporter
 			/// Construct a copy of the given JSONObject.
 			/// </summary>
 			/// <param name="other"></param>
-			public JSONObject(JSONObject other)
+			public JsonObject(JsonObject other)
 			{
-				values = new Dictionary<string, JSONValue>();
+				values = new Dictionary<string, JsonValue>();
 
 				if (other != null)
 				{
 					foreach (var keyValuePair in other.values)
 					{
-						values[keyValuePair.Key] = new JSONValue(keyValuePair.Value);
+						values[keyValuePair.Key] = new JsonValue(keyValuePair.Value);
 					}
 				}
 			}
@@ -415,9 +415,9 @@ namespace AnimationImporter
 				return values.ContainsKey(key);
 			}
 
-			public JSONValue GetValue(string key)
+			public JsonValue GetValue(string key)
 			{
-				JSONValue value;
+				JsonValue value;
 				values.TryGetValue(key, out value);
 				return value;
 			}
@@ -427,7 +427,7 @@ namespace AnimationImporter
 				var value = GetValue(key);
 				if (value == null)
 				{
-					JSONLogger.Error(key + "(string) == null");
+					JsonLogger.Error(key + "(string) == null");
 					return string.Empty;
 				}
 				return value.Str;
@@ -438,18 +438,18 @@ namespace AnimationImporter
 				var value = GetValue(key);
 				if (value == null)
 				{
-					JSONLogger.Error(key + " == null");
+					JsonLogger.Error(key + " == null");
 					return double.NaN;
 				}
 				return value.Number;
 			}
 
-			public JSONObject GetObject(string key)
+			public JsonObject GetObject(string key)
 			{
 				var value = GetValue(key);
 				if (value == null)
 				{
-					JSONLogger.Error(key + " == null");
+					JsonLogger.Error(key + " == null");
 					return null;
 				}
 				return value.Obj;
@@ -460,35 +460,35 @@ namespace AnimationImporter
 				var value = GetValue(key);
 				if (value == null)
 				{
-					JSONLogger.Error(key + " == null");
+					JsonLogger.Error(key + " == null");
 					return false;
 				}
 				return value.Boolean;
 			}
 
-			public JSONArray GetArray(string key)
+			public JsonArray GetArray(string key)
 			{
 				var value = GetValue(key);
 				if (value == null)
 				{
-					JSONLogger.Error(key + " == null");
+					JsonLogger.Error(key + " == null");
 					return null;
 				}
 				return value.Array;
 			}
 
-			public JSONValue this[string key]
+			public JsonValue this[string key]
 			{
 				get { return GetValue(key); }
 				set { values[key] = value; }
 			}
 
-			public void Add(string key, JSONValue value)
+			public void Add(string key, JsonValue value)
 			{
 				values[key] = value;
 			}
 
-			public void Add(KeyValuePair<string, JSONValue> pair)
+			public void Add(KeyValuePair<string, JsonValue> pair)
 			{
 				values[pair.Key] = pair.Value;
 			}
@@ -498,18 +498,18 @@ namespace AnimationImporter
 			/// </summary>
 			/// <param name="jsonString"></param>
 			/// <returns>A new JSONObject or null if parsing fails.</returns>
-			public static JSONObject Parse(string jsonString)
+			public static JsonObject Parse(string jsonString)
 			{
 				if (string.IsNullOrEmpty(jsonString))
 				{
 					return null;
 				}
 
-				JSONValue currentValue = null;
+				JsonValue currentValue = null;
 
 				var keyList = new List<string>();
 
-				var state = JSONParsingState.Object;
+				var state = JsonParsingState.Object;
 
 				for (var startPosition = 0; startPosition < jsonString.Length; ++startPosition)
 				{
@@ -518,23 +518,23 @@ namespace AnimationImporter
 
 					switch (state)
 					{
-						case JSONParsingState.Object:
+						case JsonParsingState.Object:
 							if (jsonString[startPosition] != '{')
 							{
 								return Fail('{', startPosition);
 							}
 
-							JSONValue newObj = new JSONObject();
+							JsonValue newObj = new JsonObject();
 							if (currentValue != null)
 							{
 								newObj.Parent = currentValue;
 							}
 							currentValue = newObj;
 
-							state = JSONParsingState.Key;
+							state = JsonParsingState.Key;
 							break;
 
-						case JSONParsingState.EndObject:
+						case JsonParsingState.EndObject:
 							if (jsonString[startPosition] != '}')
 							{
 								return Fail('}', startPosition);
@@ -548,12 +548,12 @@ namespace AnimationImporter
 							switch (currentValue.Parent.Type)
 							{
 
-								case JSONValueType.Object:
-									currentValue.Parent.Obj.values[keyList.Pop()] = new JSONValue(currentValue.Obj);
+								case JsonValueType.Object:
+									currentValue.Parent.Obj.values[keyList.Pop()] = new JsonValue(currentValue.Obj);
 									break;
 
-								case JSONValueType.Array:
-									currentValue.Parent.Array.Add(new JSONValue(currentValue.Obj));
+								case JsonValueType.Array:
+									currentValue.Parent.Array.Add(new JsonValue(currentValue.Obj));
 									break;
 
 								default:
@@ -562,14 +562,14 @@ namespace AnimationImporter
 							}
 							currentValue = currentValue.Parent;
 
-							state = JSONParsingState.ValueSeparator;
+							state = JsonParsingState.ValueSeparator;
 							break;
 
-						case JSONParsingState.Key:
+						case JsonParsingState.Key:
 							if (jsonString[startPosition] == '}')
 							{
 								--startPosition;
-								state = JSONParsingState.EndObject;
+								state = JsonParsingState.EndObject;
 								break;
 							}
 
@@ -579,32 +579,32 @@ namespace AnimationImporter
 								return Fail("key string", startPosition);
 							}
 							keyList.Add(key);
-							state = JSONParsingState.KeyValueSeparator;
+							state = JsonParsingState.KeyValueSeparator;
 							break;
 
-						case JSONParsingState.KeyValueSeparator:
+						case JsonParsingState.KeyValueSeparator:
 							if (jsonString[startPosition] != ':')
 							{
 								return Fail(':', startPosition);
 							}
-							state = JSONParsingState.Value;
+							state = JsonParsingState.Value;
 							break;
 
-						case JSONParsingState.ValueSeparator:
+						case JsonParsingState.ValueSeparator:
 							switch (jsonString[startPosition])
 							{
 
 								case ',':
-									state = currentValue.Type == JSONValueType.Object ? JSONParsingState.Key : JSONParsingState.Value;
+									state = currentValue.Type == JsonValueType.Object ? JsonParsingState.Key : JsonParsingState.Value;
 									break;
 
 								case '}':
-									state = JSONParsingState.EndObject;
+									state = JsonParsingState.EndObject;
 									--startPosition;
 									break;
 
 								case ']':
-									state = JSONParsingState.EndArray;
+									state = JsonParsingState.EndArray;
 									--startPosition;
 									break;
 
@@ -613,33 +613,33 @@ namespace AnimationImporter
 							}
 							break;
 
-						case JSONParsingState.Value:
+						case JsonParsingState.Value:
 							{
 								var c = jsonString[startPosition];
 								if (c == '"')
 								{
-									state = JSONParsingState.String;
+									state = JsonParsingState.String;
 								}
 								else if (char.IsDigit(c) || c == '-')
 								{
-									state = JSONParsingState.Number;
+									state = JsonParsingState.Number;
 								}
-								else
+								else {
 									switch (c)
 									{
 
 										case '{':
-											state = JSONParsingState.Object;
+											state = JsonParsingState.Object;
 											break;
 
 										case '[':
-											state = JSONParsingState.Array;
+											state = JsonParsingState.Array;
 											break;
 
 										case ']':
-											if (currentValue.Type == JSONValueType.Array)
+											if (currentValue.Type == JsonValueType.Array)
 											{
-												state = JSONParsingState.EndArray;
+												state = JsonParsingState.EndArray;
 											}
 											else {
 												return Fail("valid array", startPosition);
@@ -648,23 +648,24 @@ namespace AnimationImporter
 
 										case 'f':
 										case 't':
-											state = JSONParsingState.Boolean;
+											state = JsonParsingState.Boolean;
 											break;
 
 
 										case 'n':
-											state = JSONParsingState.Null;
+											state = JsonParsingState.Null;
 											break;
 
 										default:
 											return Fail("beginning of value", startPosition);
 									}
+								}
 
 								--startPosition; //To re-evaluate this char in the newly selected state
 								break;
 							}
 
-						case JSONParsingState.String:
+						case JsonParsingState.String:
 							var str = ParseString(jsonString, ref startPosition);
 							if (str == null)
 							{
@@ -674,23 +675,23 @@ namespace AnimationImporter
 							switch (currentValue.Type)
 							{
 
-								case JSONValueType.Object:
-									currentValue.Obj.values[keyList.Pop()] = new JSONValue(str);
+								case JsonValueType.Object:
+									currentValue.Obj.values[keyList.Pop()] = new JsonValue(str);
 									break;
 
-								case JSONValueType.Array:
+								case JsonValueType.Array:
 									currentValue.Array.Add(str);
 									break;
 
 								default:
-									JSONLogger.Error("Fatal error, current JSON value not valid");
+									JsonLogger.Error("Fatal error, current JSON value not valid");
 									return null;
 							}
 
-							state = JSONParsingState.ValueSeparator;
+							state = JsonParsingState.ValueSeparator;
 							break;
 
-						case JSONParsingState.Number:
+						case JsonParsingState.Number:
 							var number = ParseNumber(jsonString, ref startPosition);
 							if (double.IsNaN(number))
 							{
@@ -700,24 +701,24 @@ namespace AnimationImporter
 							switch (currentValue.Type)
 							{
 
-								case JSONValueType.Object:
-									currentValue.Obj.values[keyList.Pop()] = new JSONValue(number);
+								case JsonValueType.Object:
+									currentValue.Obj.values[keyList.Pop()] = new JsonValue(number);
 									break;
 
-								case JSONValueType.Array:
+								case JsonValueType.Array:
 									currentValue.Array.Add(number);
 									break;
 
 								default:
-									JSONLogger.Error("Fatal error, current JSON value not valid");
+									JsonLogger.Error("Fatal error, current JSON value not valid");
 									return null;
 							}
 
-							state = JSONParsingState.ValueSeparator;
+							state = JsonParsingState.ValueSeparator;
 
 							break;
 
-						case JSONParsingState.Boolean:
+						case JsonParsingState.Boolean:
 							if (jsonString[startPosition] == 't')
 							{
 								if (jsonString.Length < startPosition + 4 ||
@@ -731,16 +732,16 @@ namespace AnimationImporter
 								switch (currentValue.Type)
 								{
 
-									case JSONValueType.Object:
-										currentValue.Obj.values[keyList.Pop()] = new JSONValue(true);
+									case JsonValueType.Object:
+										currentValue.Obj.values[keyList.Pop()] = new JsonValue(true);
 										break;
 
-									case JSONValueType.Array:
-										currentValue.Array.Add(new JSONValue(true));
+									case JsonValueType.Array:
+										currentValue.Array.Add(new JsonValue(true));
 										break;
 
 									default:
-										JSONLogger.Error("Fatal error, current JSON value not valid");
+										JsonLogger.Error("Fatal error, current JSON value not valid");
 										return null;
 								}
 
@@ -759,42 +760,42 @@ namespace AnimationImporter
 								switch (currentValue.Type)
 								{
 
-									case JSONValueType.Object:
-										currentValue.Obj.values[keyList.Pop()] = new JSONValue(false);
+									case JsonValueType.Object:
+										currentValue.Obj.values[keyList.Pop()] = new JsonValue(false);
 										break;
 
-									case JSONValueType.Array:
-										currentValue.Array.Add(new JSONValue(false));
+									case JsonValueType.Array:
+										currentValue.Array.Add(new JsonValue(false));
 										break;
 
 									default:
-										JSONLogger.Error("Fatal error, current JSON value not valid");
+										JsonLogger.Error("Fatal error, current JSON value not valid");
 										return null;
 								}
 
 								startPosition += 4;
 							}
 
-							state = JSONParsingState.ValueSeparator;
+							state = JsonParsingState.ValueSeparator;
 							break;
 
-						case JSONParsingState.Array:
+						case JsonParsingState.Array:
 							if (jsonString[startPosition] != '[')
 							{
 								return Fail('[', startPosition);
 							}
 
-							JSONValue newArray = new JSONArray();
+							JsonValue newArray = new JsonArray();
 							if (currentValue != null)
 							{
 								newArray.Parent = currentValue;
 							}
 							currentValue = newArray;
 
-							state = JSONParsingState.Value;
+							state = JsonParsingState.Value;
 							break;
 
-						case JSONParsingState.EndArray:
+						case JsonParsingState.EndArray:
 							if (jsonString[startPosition] != ']')
 							{
 								return Fail(']', startPosition);
@@ -808,12 +809,12 @@ namespace AnimationImporter
 							switch (currentValue.Parent.Type)
 							{
 
-								case JSONValueType.Object:
-									currentValue.Parent.Obj.values[keyList.Pop()] = new JSONValue(currentValue.Array);
+								case JsonValueType.Object:
+									currentValue.Parent.Obj.values[keyList.Pop()] = new JsonValue(currentValue.Array);
 									break;
 
-								case JSONValueType.Array:
-									currentValue.Parent.Array.Add(new JSONValue(currentValue.Array));
+								case JsonValueType.Array:
+									currentValue.Parent.Array.Add(new JsonValue(currentValue.Array));
 									break;
 
 								default:
@@ -821,10 +822,10 @@ namespace AnimationImporter
 							}
 							currentValue = currentValue.Parent;
 
-							state = JSONParsingState.ValueSeparator;
+							state = JsonParsingState.ValueSeparator;
 							break;
 
-						case JSONParsingState.Null:
+						case JsonParsingState.Null:
 							if (jsonString[startPosition] == 'n')
 							{
 								if (jsonString.Length < startPosition + 4 ||
@@ -838,33 +839,36 @@ namespace AnimationImporter
 								switch (currentValue.Type)
 								{
 
-									case JSONValueType.Object:
-										currentValue.Obj.values[keyList.Pop()] = new JSONValue(JSONValueType.Null);
+									case JsonValueType.Object:
+										currentValue.Obj.values[keyList.Pop()] = new JsonValue(JsonValueType.Null);
 										break;
 
-									case JSONValueType.Array:
-										currentValue.Array.Add(new JSONValue(JSONValueType.Null));
+									case JsonValueType.Array:
+										currentValue.Array.Add(new JsonValue(JsonValueType.Null));
 										break;
 
 									default:
-										JSONLogger.Error("Fatal error, current JSON value not valid");
+										JsonLogger.Error("Fatal error, current JSON value not valid");
 										return null;
 								}
 
 								startPosition += 3;
 							}
-							state = JSONParsingState.ValueSeparator;
+							state = JsonParsingState.ValueSeparator;
 							break;
 
 					}
 				}
-				JSONLogger.Error("Unexpected end of string");
+				JsonLogger.Error("Unexpected end of string");
 				return null;
 			}
 
 			private static int SkipWhitespace(string str, int pos)
 			{
-				for (; pos < str.Length && char.IsWhiteSpace(str[pos]); ++pos) ;
+				for (; pos < str.Length && char.IsWhiteSpace(str[pos]); ++pos) {
+					;
+				}
+
 				return pos;
 			}
 
@@ -906,16 +910,16 @@ namespace AnimationImporter
 				// Parse Unicode characters that are escaped as \uXXXX
 				do
 				{
-					Match m = unicodeRegex.Match(result);
+					Match m = UnicodeRegex.Match(result);
 					if (!m.Success)
 					{
 						break;
 					}
 
 					string s = m.Groups[1].Captures[0].Value;
-					unicodeBytes[1] = byte.Parse(s.Substring(0, 2), NumberStyles.HexNumber);
-					unicodeBytes[0] = byte.Parse(s.Substring(2, 2), NumberStyles.HexNumber);
-					s = Encoding.Unicode.GetString(unicodeBytes);
+					UnicodeBytes[1] = byte.Parse(s.Substring(0, 2), NumberStyles.HexNumber);
+					UnicodeBytes[0] = byte.Parse(s.Substring(2, 2), NumberStyles.HexNumber);
+					s = Encoding.Unicode.GetString(UnicodeBytes);
 
 					result = result.Replace(m.Value, s);
 				} while (true);
@@ -935,7 +939,9 @@ namespace AnimationImporter
 
 				for (;
 					endPosition < str.Length && str[endPosition] != ',' && str[endPosition] != ']' && str[endPosition] != '}';
-					++endPosition) ;
+					++endPosition) {
+					;
+				}
 
 				double result;
 				if (
@@ -948,14 +954,14 @@ namespace AnimationImporter
 				return result;
 			}
 
-			private static JSONObject Fail(char expected, int position)
+			private static JsonObject Fail(char expected, int position)
 			{
 				return Fail(new string(expected, 1), position);
 			}
 
-			private static JSONObject Fail(string expected, int position)
+			private static JsonObject Fail(string expected, int position)
 			{
-				JSONLogger.Error("Invalid json string, expecting " + expected + " at " + position);
+				JsonLogger.Error("Invalid json string, expecting " + expected + " at " + position);
 				return null;
 			}
 
@@ -980,7 +986,7 @@ namespace AnimationImporter
 				return stringBuilder.ToString();
 			}
 
-			public IEnumerator<KeyValuePair<string, JSONValue>> GetEnumerator()
+			public IEnumerator<KeyValuePair<string, JsonValue>> GetEnumerator()
 			{
 				return values.GetEnumerator();
 			}

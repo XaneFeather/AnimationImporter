@@ -1,44 +1,33 @@
-﻿using UnityEngine;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Random = UnityEngine.Random;
-using UnityEditor;
+﻿using System.Collections.Generic;
 using System.IO;
-using AnimationImporter.Boomlagoon.JSON;
-using UnityEditor.Animations;
-using System.Linq;
+using UnityEditor;
+using UnityEngine;
 
-namespace AnimationImporter
-{
-	public class AnimationImporterWindow : EditorWindow
-	{
+namespace AnimationImporter {
+	public class AnimationImporterWindow : EditorWindow {
 		// ================================================================================
 		//  private
 		// --------------------------------------------------------------------------------
 
-		private AnimationImporter importer
-		{
-			get
-			{
+		private AnimationImporter Importer {
+			get {
 				return AnimationImporter.Instance;
 			}
 		}
 
-		private GUIStyle _dropBoxStyle;
-		private GUIStyle _infoTextStyle;
+		private GUIStyle dropBoxStyle;
+		private GUIStyle infoTextStyle;
 
-		private string _nonLoopingAnimationEnterValue = "";
+		private string nonLoopingAnimationEnterValue = "";
 
-		private Vector2 _scrollPos = Vector2.zero;
+		private Vector2 scrollPos = Vector2.zero;
 
 		// ================================================================================
 		//  menu entry
 		// --------------------------------------------------------------------------------
 
 		[MenuItem("Window/Animation Importer")]
-		public static void ImportAnimationsMenu()
-		{
+		public static void ImportAnimationsMenu() {
 			GetWindow(typeof(AnimationImporterWindow), false, "Anim Importer");
 		}
 
@@ -46,30 +35,27 @@ namespace AnimationImporter
 		//  unity methods
 		// --------------------------------------------------------------------------------
 
-		public void OnEnable()
-		{
-			importer.LoadOrCreateUserConfig();
+		public void OnEnable() {
+			Importer.LoadOrCreateUserConfig();
 		}
 
-		public void OnGUI()
-		{
-			CheckGUIStyles();
+		public void OnGUI() {
+			CheckGuiStyles();
 
-			if (importer.canImportAnimations)
-			{
-				_scrollPos = GUILayout.BeginScrollView(_scrollPos);
+			if (Importer.CanImportAnimations) {
+				scrollPos = GUILayout.BeginScrollView(scrollPos);
 
 				EditorGUILayout.Space();
 
-				ShowAnimationsGUI();
+				ShowAnimationsGui();
 
 				GUILayout.Space(25f);
 
-				ShowAnimatorControllerGUI();
+				ShowAnimatorControllerGui();
 
 				GUILayout.Space(25f);
 
-				ShowAnimatorOverrideControllerGUI();
+				ShowAnimatorOverrideControllerGui();
 
 				GUILayout.Space(25f);
 
@@ -77,8 +63,7 @@ namespace AnimationImporter
 
 				GUILayout.EndScrollView();
 			}
-			else
-			{
+			else {
 				EditorGUILayout.Space();
 
 				ShowHeadline("Select Aseprite Application");
@@ -89,7 +74,7 @@ namespace AnimationImporter
 
 				EditorGUILayout.Space();
 
-				GUILayout.Label("Aseprite has to be installed on this machine because the Importer calls Aseprite through the command line for creating images and getting animation data.", _infoTextStyle);
+				GUILayout.Label("Aseprite has to be installed on this machine because the Importer calls Aseprite through the command line for creating images and getting animation data.", infoTextStyle);
 			}
 		}
 
@@ -97,34 +82,29 @@ namespace AnimationImporter
 		//  GUI methods
 		// --------------------------------------------------------------------------------
 
-		private void CheckGUIStyles()
-		{
-			if (_dropBoxStyle == null)
-			{
+		private void CheckGuiStyles() {
+			if (dropBoxStyle == null) {
 				GetBoxStyle();
 			}
-			if (_infoTextStyle == null)
-			{
+			if (infoTextStyle == null) {
 				GetTextInfoStyle();
 			}
 		}
 
-		private void GetBoxStyle()
-		{
-			_dropBoxStyle = new GUIStyle(EditorStyles.helpBox);
-			_dropBoxStyle.alignment = TextAnchor.MiddleCenter;
+		private void GetBoxStyle() {
+			dropBoxStyle = new GUIStyle(EditorStyles.helpBox) {
+				alignment = TextAnchor.MiddleCenter
+			};
 		}
 
-		private void GetTextInfoStyle()
-		{
-			_infoTextStyle = new GUIStyle(EditorStyles.label);
-			_infoTextStyle.wordWrap = true;
+		private void GetTextInfoStyle() {
+			infoTextStyle = new GUIStyle(EditorStyles.label) {
+				wordWrap = true
+			};
 		}
 
-		private void ShowUserConfig()
-		{
-			if (importer == null || importer.sharedData == null)
-			{
+		private void ShowUserConfig() {
+			if (Importer == null || Importer.SharedData == null) {
 				return;
 			}
 
@@ -139,57 +119,54 @@ namespace AnimationImporter
 			GUILayout.Space(5f);
 
 			/*
-				sprite values
+				Sprite values
 			*/
 
-			importer.sharedData.targetObjectType = (AnimationTargetObjectType)EditorGUILayout.EnumPopup("Target Object", importer.sharedData.targetObjectType);
+			Importer.SharedData.TargetObjectType = (AnimationTargetObjectType)EditorGUILayout.EnumPopup("Target Object", Importer.SharedData.TargetObjectType);
 
-			importer.sharedData.spriteAlignment = (SpriteAlignment)EditorGUILayout.EnumPopup("Sprite Alignment", importer.sharedData.spriteAlignment);
+			Importer.SharedData.SpriteAlignment = (SpriteAlignment)EditorGUILayout.EnumPopup("Sprite Alignment", Importer.SharedData.SpriteAlignment);
 
-			if (importer.sharedData.spriteAlignment == SpriteAlignment.Custom)
-			{
-				importer.sharedData.spriteAlignmentCustomX = EditorGUILayout.Slider("x", importer.sharedData.spriteAlignmentCustomX, 0, 1f);
-				importer.sharedData.spriteAlignmentCustomY = EditorGUILayout.Slider("y", importer.sharedData.spriteAlignmentCustomY, 0, 1f);
+			if (Importer.SharedData.SpriteAlignment == SpriteAlignment.Custom) {
+				Importer.SharedData.SpriteAlignmentCustomX = EditorGUILayout.Slider("x", Importer.SharedData.SpriteAlignmentCustomX, 0, 1f);
+				Importer.SharedData.SpriteAlignmentCustomY = EditorGUILayout.Slider("y", Importer.SharedData.SpriteAlignmentCustomY, 0, 1f);
 			}
 
-			importer.sharedData.spritePixelsPerUnit = EditorGUILayout.FloatField("Sprite Pixels per Unit", importer.sharedData.spritePixelsPerUnit);
+			Importer.SharedData.SpritePixelsPerUnit = EditorGUILayout.FloatField("Sprite Pixels per Unit", Importer.SharedData.SpritePixelsPerUnit);
 
 			GUILayout.Space(5f);
 
-			ShowTargetLocationOptions("Sprites", importer.sharedData.spritesTargetLocation);
-			ShowTargetLocationOptions("Animations", importer.sharedData.animationsTargetLocation);
-			ShowTargetLocationOptions("AnimationController", importer.sharedData.animationControllersTargetLocation);
+			ShowTargetLocationOptions("Sprites", Importer.SharedData.SpritesTargetLocation);
+			ShowTargetLocationOptions("Animations", Importer.SharedData.AnimationsTargetLocation);
+			ShowTargetLocationOptions("AnimationController", Importer.SharedData.AnimationControllersTargetLocation);
 
 			GUILayout.Space(5f);
 
-			importer.sharedData.spriteNamingScheme = (SpriteNamingScheme)EditorGUILayout.IntPopup("Sprite Naming Scheme",
-				(int)importer.sharedData.spriteNamingScheme,
-				SpriteNaming.namingSchemesDisplayValues, SpriteNaming.namingSchemesValues);
+			Importer.SharedData.SpriteNamingScheme = (SpriteNamingScheme)EditorGUILayout.IntPopup("Sprite Naming Scheme",
+				(int)Importer.SharedData.SpriteNamingScheme,
+				SpriteNaming.NamingSchemesDisplayValues, SpriteNaming.NamingSchemesValues);
 
 			GUILayout.Space(25f);
 
 			ShowHeadline("Automatic Import");
 			EditorGUILayout.BeginHorizontal();
-			importer.sharedData.automaticImporting = EditorGUILayout.Toggle("Automatic Import", importer.sharedData.automaticImporting);
+			Importer.SharedData.AutomaticImporting = EditorGUILayout.Toggle("Automatic Import", Importer.SharedData.AutomaticImporting);
 			EditorGUILayout.EndHorizontal();
 			EditorGUILayout.LabelField("Looks for existing Animation Controller with same name.");
 
 			/*
-				animations that do not loop
+				Animations that do not loop
 			*/
 
 			GUILayout.Space(25f);
 			ShowHeadline("Non-looping Animations");
 
-			for (int i = 0; i < importer.sharedData.animationNamesThatDoNotLoop.Count; i++)
-			{
+			for (int i = 0; i < Importer.SharedData.AnimationNamesThatDoNotLoop.Count; i++) {
 				GUILayout.BeginHorizontal();
-				GUILayout.Label(importer.sharedData.animationNamesThatDoNotLoop[i]);
+				GUILayout.Label(Importer.SharedData.AnimationNamesThatDoNotLoop[i]);
 				bool doDelete = GUILayout.Button("Delete");
 				GUILayout.EndHorizontal();
-				if (doDelete)
-				{
-					importer.sharedData.RemoveAnimationThatDoesNotLoop(i);
+				if (doDelete) {
+					Importer.SharedData.RemoveAnimationThatDoesNotLoop(i);
 					break;
 				}
 			}
@@ -198,55 +175,47 @@ namespace AnimationImporter
 
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Add ");
-			_nonLoopingAnimationEnterValue = EditorGUILayout.TextField(_nonLoopingAnimationEnterValue);
-			if (GUILayout.Button("Enter"))
-			{
-				if (importer.sharedData.AddAnimationThatDoesNotLoop(_nonLoopingAnimationEnterValue))
-				{
-					_nonLoopingAnimationEnterValue = "";
+			nonLoopingAnimationEnterValue = EditorGUILayout.TextField(nonLoopingAnimationEnterValue);
+			if (GUILayout.Button("Enter")) {
+				if (Importer.SharedData.AddAnimationThatDoesNotLoop(nonLoopingAnimationEnterValue)) {
+					nonLoopingAnimationEnterValue = "";
 				}
 			}
 			GUILayout.EndHorizontal();
 
 			EditorGUILayout.LabelField("Enter Part of the Animation Name or a Regex Expression.");
 
-			if (GUI.changed)
-			{
-				EditorUtility.SetDirty(importer.sharedData);
+			if (GUI.changed) {
+				EditorUtility.SetDirty(Importer.SharedData);
 			}
 		}
 
-		private void ShowTargetLocationOptions(string label, AssetTargetLocation targetLocation)
-		{
+		private void ShowTargetLocationOptions(string label, AssetTargetLocation targetLocation) {
 			EditorGUILayout.BeginHorizontal();
 
 			GUILayout.Label(label, GUILayout.Width(130f));
 
-			targetLocation.locationType = (AssetTargetLocationType)EditorGUILayout.EnumPopup(targetLocation.locationType, GUILayout.Width(130f));
+			targetLocation.LocationType = (AssetTargetLocationType)EditorGUILayout.EnumPopup(targetLocation.LocationType, GUILayout.Width(130f));
 
 			bool prevEnabled = GUI.enabled;
-			GUI.enabled = targetLocation.locationType == AssetTargetLocationType.GlobalDirectory;
+			GUI.enabled = targetLocation.LocationType == AssetTargetLocationType.GlobalDirectory;
 
-			string globalDirectory = targetLocation.globalDirectory;
+			string globalDirectory = targetLocation.GlobalDirectory;
 
-			if (GUILayout.Button("Select", GUILayout.Width(50f)))
-			{
+			if (GUILayout.Button("Select", GUILayout.Width(50f))) {
 				var startDirectory = globalDirectory;
-				if (!Directory.Exists(startDirectory))
-				{
+				if (!Directory.Exists(startDirectory)) {
 					startDirectory = Application.dataPath;
 				}
 				startDirectory = Application.dataPath;
 
 				var path = EditorUtility.OpenFolderPanel("Select Target Location", globalDirectory, "");
-				if (!string.IsNullOrEmpty(path) && AssetDatabase.IsValidFolder(AssetDatabaseUtility.GetAssetPath(path)))
-				{
-					targetLocation.globalDirectory = AssetDatabaseUtility.GetAssetPath(path);
+				if (!string.IsNullOrEmpty(path) && AssetDatabase.IsValidFolder(AssetDatabaseUtility.GetAssetPath(path))) {
+					targetLocation.GlobalDirectory = AssetDatabaseUtility.GetAssetPath(path);
 				}
 			}
 
-			if (targetLocation.locationType == AssetTargetLocationType.GlobalDirectory)
-			{
+			if (targetLocation.LocationType == AssetTargetLocationType.GlobalDirectory) {
 				string displayDirectory = "/" + globalDirectory;
 				EditorGUILayout.EndHorizontal();
 				EditorGUILayout.BeginHorizontal();
@@ -258,25 +227,21 @@ namespace AnimationImporter
 			EditorGUILayout.EndHorizontal();
 		}
 
-		private void ShowAsepriteApplicationSelection()
-		{
+		private void ShowAsepriteApplicationSelection() {
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Aseprite Application Path");
 
-			string newPath = importer.asepritePath;
+			string newPath = Importer.AsepritePath;
 
-			if (GUILayout.Button("Select"))
-			{
+			if (GUILayout.Button("Select")) {
 				var path = EditorUtility.OpenFilePanel(
 					"Select Aseprite Application",
 					"",
 					"exe,app");
-				if (!string.IsNullOrEmpty(path))
-				{
+				if (!string.IsNullOrEmpty(path)) {
 					newPath = path;
 
-					if (Application.platform == RuntimePlatform.OSXEditor)
-					{
+					if (Application.platform == RuntimePlatform.OSXEditor) {
 						newPath += "/Contents/MacOS/aseprite";
 					}
 				}
@@ -284,48 +249,41 @@ namespace AnimationImporter
 			GUILayout.EndHorizontal();
 
 			GUILayout.BeginHorizontal();
-			importer.asepritePath = GUILayout.TextField(newPath, GUILayout.MaxWidth(300f));
+			Importer.AsepritePath = GUILayout.TextField(newPath, GUILayout.MaxWidth(300f));
 
 			GUILayout.EndHorizontal();
 		}
 
-		private void ShowAnimationsGUI()
-		{
+		private void ShowAnimationsGui() {
 			ShowHeadline("Animations");
 
-			DefaultAsset[] droppedAssets = ShowDropButton<DefaultAsset>(importer.canImportAnimations, AnimationImporter.IsValidAsset);
-			if (droppedAssets != null && droppedAssets.Length > 0)
-			{
-				importer.ImportAssets(droppedAssets);
+			DefaultAsset[] droppedAssets = ShowDropButton<DefaultAsset>(Importer.CanImportAnimations, AnimationImporter.IsValidAsset);
+			if (droppedAssets != null && droppedAssets.Length > 0) {
+				Importer.ImportAssets(droppedAssets);
 			}
 		}
 
-		private void ShowAnimatorControllerGUI()
-		{
+		private void ShowAnimatorControllerGui() {
 			ShowHeadline("Animator Controller + Animations");
 
-			DefaultAsset[] droppedAssets = ShowDropButton<DefaultAsset>(importer.canImportAnimations, AnimationImporter.IsValidAsset);
-			if (droppedAssets != null && droppedAssets.Length > 0)
-			{
-				importer.ImportAssets(droppedAssets, ImportAnimatorController.AnimatorController);
+			DefaultAsset[] droppedAssets = ShowDropButton<DefaultAsset>(Importer.CanImportAnimations, AnimationImporter.IsValidAsset);
+			if (droppedAssets != null && droppedAssets.Length > 0) {
+				Importer.ImportAssets(droppedAssets, ImportAnimatorController.AnimatorController);
 			}
 		}
 
-		private void ShowAnimatorOverrideControllerGUI()
-		{
+		private void ShowAnimatorOverrideControllerGui() {
 			ShowHeadline("Animator Override Controller + Animations");
 
-			importer.baseController = EditorGUILayout.ObjectField("Based on Controller:", importer.baseController, typeof(RuntimeAnimatorController), false) as RuntimeAnimatorController;
+			Importer.BaseController = EditorGUILayout.ObjectField("Based on Controller:", Importer.BaseController, typeof(RuntimeAnimatorController), false) as RuntimeAnimatorController;
 
-			DefaultAsset[] droppedAssets = ShowDropButton<DefaultAsset>(importer.canImportAnimationsForOverrideController, AnimationImporter.IsValidAsset);
-			if (droppedAssets != null && droppedAssets.Length > 0)
-			{
-				importer.ImportAssets(droppedAssets, ImportAnimatorController.AnimatorOverrideController);
+			DefaultAsset[] droppedAssets = ShowDropButton<DefaultAsset>(Importer.CanImportAnimationsForOverrideController, AnimationImporter.IsValidAsset);
+			if (droppedAssets != null && droppedAssets.Length > 0) {
+				Importer.ImportAssets(droppedAssets, ImportAnimatorController.AnimatorOverrideController);
 			}
 		}
 
-		private void ShowHeadline(string headline)
-		{
+		private void ShowHeadline(string headline) {
 			EditorGUILayout.LabelField(headline, EditorStyles.boldLabel, GUILayout.Height(20f));
 		}
 
@@ -335,44 +293,41 @@ namespace AnimationImporter
 
 		public delegate bool IsValidAssetDelegate(string path);
 
-		private T[] ShowDropButton<T>(bool isEnabled, IsValidAssetDelegate IsValidAsset) where T : UnityEngine.Object
-		{
+		private T[] ShowDropButton<T>(bool isEnabled, IsValidAssetDelegate isValidAsset) where T : UnityEngine.Object {
 			T[] returnValue = null;
 
-			Rect drop_area = GUILayoutUtility.GetRect(0.0f, 80.0f, GUILayout.ExpandWidth(true));
+			Rect dropArea = GUILayoutUtility.GetRect(0.0f, 80.0f, GUILayout.ExpandWidth(true));
 
 			GUI.enabled = isEnabled;
-			GUI.Box(drop_area, "Drop Animation files here", _dropBoxStyle);
+			GUI.Box(dropArea, "Drop Animation files here", dropBoxStyle);
 			GUI.enabled = true;
 
-			if (!isEnabled)
+			if (!isEnabled) {
 				return null;
+			}
 
 			Event evt = Event.current;
-			switch (evt.type)
-			{
+			switch (evt.type) {
 				case EventType.DragUpdated:
 				case EventType.DragPerform:
 
-					if (!drop_area.Contains(evt.mousePosition)
-						|| !DraggedObjectsContainValidObject<T>(IsValidAsset))
+					if (!dropArea.Contains(evt.mousePosition)
+						|| !DraggedObjectsContainValidObject<T>(isValidAsset)) {
 						return null;
+					}
 
 					DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
 
-					if (evt.type == EventType.DragPerform)
-					{
+					if (evt.type == EventType.DragPerform) {
 						DragAndDrop.AcceptDrag();
 
 						List<T> validObjects = new List<T>();
 
-						foreach (UnityEngine.Object dragged_object in DragAndDrop.objectReferences)
-						{
-							var assetPath = AssetDatabase.GetAssetPath(dragged_object);
+						foreach (UnityEngine.Object draggedObject in DragAndDrop.objectReferences) {
+							var assetPath = AssetDatabase.GetAssetPath(draggedObject);
 
-							if (dragged_object is T && IsValidAsset(assetPath))
-							{
-								validObjects.Add(dragged_object as T);
+							if (draggedObject is T && isValidAsset(assetPath)) {
+								validObjects.Add(draggedObject as T);
 							}
 						}
 
@@ -387,14 +342,11 @@ namespace AnimationImporter
 			return returnValue;
 		}
 
-		private bool DraggedObjectsContainValidObject<T>(IsValidAssetDelegate IsValidAsset) where T : UnityEngine.Object
-		{
-			foreach (UnityEngine.Object dragged_object in DragAndDrop.objectReferences)
-			{
-				var assetPath = AssetDatabase.GetAssetPath(dragged_object);
+		private bool DraggedObjectsContainValidObject<T>(IsValidAssetDelegate isValidAsset) where T : UnityEngine.Object {
+			foreach (UnityEngine.Object draggedObject in DragAndDrop.objectReferences) {
+				var assetPath = AssetDatabase.GetAssetPath(draggedObject);
 
-				if (dragged_object is T && IsValidAsset(assetPath))
-				{
+				if (draggedObject is T && isValidAsset(assetPath)) {
 					return true;
 				}
 			}

@@ -1,76 +1,70 @@
 ﻿using System;
 using UnityEngine;
 
-namespace AnimationImporter
-{
-	public enum SpriteNamingScheme : int
-	{
-		Classic,			// hero 0
-		FileAnimationZero,	// hero_idle_0, ...
-		FileAnimationOne,   // hero_idle_1, ...
-		AnimationZero,      // idle_0, ...
-		AnimationOne        // idle_1, ...
+namespace AnimationImporter {
+	[Serializable]
+	public enum SpriteNamingScheme : int {
+		Classic,             // file 0
+		FileAnimationZero,   // file_anim_0, ...
+		FileAnimationOne,    // file_anim_1, ...
+		AnimationZero,       // anim_0, ...
+		AnimationOne,        // anim_1, ...
+		FileAtAnimationZero, // file@anim00
+		FileAtAnimationOne   // file@anim01
 	}
 
-	public static class SpriteNaming
-	{
-		private static int[] _namingSchemesValues = null;
-		public static int[] namingSchemesValues
-		{
-			get
-			{
-				if (_namingSchemesValues == null)
-				{
+	public static class SpriteNaming {
+		private static int[] namingSchemesValues = null;
+		public static int[] NamingSchemesValues {
+			get {
+				if (namingSchemesValues == null) {
 					InitNamingLists();
 				}
 
-				return _namingSchemesValues;
+				return namingSchemesValues;
 			}
 		}
 
-		private static string[] _namingSchemesDisplayValues = null;
-		public static string[] namingSchemesDisplayValues
-		{
-			get
-			{
-				if (_namingSchemesDisplayValues == null)
-				{
+		private static string[] namingSchemesDisplayValues = null;
+		public static string[] NamingSchemesDisplayValues {
+			get {
+				if (namingSchemesDisplayValues == null) {
 					InitNamingLists();
 				}
 
-				return _namingSchemesDisplayValues;
+				return namingSchemesDisplayValues;
 			}
 		}
 
-		private static void InitNamingLists()
-		{
+		private static void InitNamingLists() {
 			var allNamingSchemes = Enum.GetValues(typeof(SpriteNamingScheme));
 
-			_namingSchemesValues = new int[allNamingSchemes.Length];
-			_namingSchemesDisplayValues = new string[allNamingSchemes.Length];
+			namingSchemesValues = new int[allNamingSchemes.Length];
+			namingSchemesDisplayValues = new string[allNamingSchemes.Length];
 
-			for (int i = 0; i < allNamingSchemes.Length; i++)
-			{
+			for (int i = 0; i < allNamingSchemes.Length; i++) {
 				SpriteNamingScheme namingScheme = (SpriteNamingScheme)allNamingSchemes.GetValue(i);
-				_namingSchemesValues[i] = (int)namingScheme;
-				_namingSchemesDisplayValues[i] = namingScheme.ToDisplayString();
+				namingSchemesValues[i] = (int)namingScheme;
+				namingSchemesDisplayValues[i] = namingScheme.ToDisplayString();
 			}
 		}
 
-		private static string ToDisplayString(this SpriteNamingScheme namingScheme)
-		{
-			switch (namingScheme)
-			{
+		private static string ToDisplayString(this SpriteNamingScheme namingScheme) {
+			switch (namingScheme) {
 				case SpriteNamingScheme.Classic:
-					return "hero 0, hero 1, ... (Default)";
+					return "file 00, file 01, ...";
 				case SpriteNamingScheme.FileAnimationZero:
-					return "hero_idle_0, hero_idle_1, ...";
+					return "file_anim_00, file_anim_01, ...";
 				case SpriteNamingScheme.FileAnimationOne:
-					return "hero_idle_1, hero_idle_2, ...";
+					return "file_anim_01, file_anim_02, ...";
 				case SpriteNamingScheme.AnimationZero:
-					return "idle_0, idle_1, ...";
+					return "anim_00, anim_01, ...";
 				case SpriteNamingScheme.AnimationOne:
-					return "idle_1, idle_2, ...";
+					return "anim_01, anim_02, ...";
+				case SpriteNamingScheme.FileAtAnimationZero:
+					return "file@anim_00, file@anim_01, ...";
+				case SpriteNamingScheme.FileAtAnimationOne:
+					return "file@anim_01, file@anim_02, ...";
 			}
 
 			return "";

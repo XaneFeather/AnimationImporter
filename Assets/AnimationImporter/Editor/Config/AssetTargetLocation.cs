@@ -8,7 +8,7 @@ namespace AnimationImporter
 	{
 		[SerializeField]
 		private AssetTargetLocationType _locationType;
-		public AssetTargetLocationType locationType
+		public AssetTargetLocationType LocationType
 		{
 			get { return _locationType; }
 			set { _locationType = value; }
@@ -16,14 +16,14 @@ namespace AnimationImporter
 
 		[SerializeField]
 		private string _globalDirectory = "Assets";
-		public string globalDirectory
+		public string GlobalDirectory
 		{
 			get { return _globalDirectory; }
 			set { _globalDirectory = value; }
 		}
 		
 		private string _subDirectoryName;
-		public string subDirectoryName
+		public string SubDirectoryName
 		{
 			get {return _subDirectoryName; }
 		}
@@ -39,7 +39,7 @@ namespace AnimationImporter
 
 		public AssetTargetLocation(AssetTargetLocationType type)
 		{
-			locationType = type;
+			LocationType = type;
 		}
 
 		// ================================================================================
@@ -60,13 +60,13 @@ namespace AnimationImporter
 
 		public string GetTargetDirectory(string assetDirectory)
 		{
-			if (locationType == AssetTargetLocationType.GlobalDirectory)
+			if (LocationType == AssetTargetLocationType.GlobalDirectory)
 			{
-				return globalDirectory;
+				return GlobalDirectory;
 			}
-			else if (locationType == AssetTargetLocationType.SubDirectory)
+			else if (LocationType == AssetTargetLocationType.SubDirectory)
 			{
-				return Path.Combine(assetDirectory, subDirectoryName);
+				return Path.Combine(assetDirectory, SubDirectoryName);
 			}
 
 			return assetDirectory;

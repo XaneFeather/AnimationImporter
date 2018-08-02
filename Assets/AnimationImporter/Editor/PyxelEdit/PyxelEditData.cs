@@ -8,20 +8,20 @@ namespace AnimationImporter.PyxelEdit
 {
 	public class PyxelEditData
 	{
-		public Tileset tileset = new Tileset();
-		public Canvas canvas = new Canvas();
-		public string name;
-		public Animations animations = new Animations();
-		public string version;
+		public Tileset Tileset = new Tileset();
+		public Canvas Canvas = new Canvas();
+		public string Name;
+		public Animations Animations = new Animations();
+		public string Version;
 	}
 
 	public class Tileset
 	{
-		public int tileWidth;
-		public int tileHeight;
-		public int tilesWide;
-		public bool fixedWidth;
-		public int numTiles;
+		public int TileWidth;
+		public int TileHeight;
+		public int TilesWide;
+		public bool FixedWidth;
+		public int NumTiles;
 	}
 
 	public class Animations : Dictionary<int, Animation>
@@ -30,12 +30,12 @@ namespace AnimationImporter.PyxelEdit
 
 	public class Canvas
 	{
-		public int width;
-		public int height;
-		public int tileWidth;
-		public int tileHeight;
-		public int numLayers;
-		public Layers layers = new Layers();
+		public int Width;
+		public int Height;
+		public int TileWidth;
+		public int TileHeight;
+		public int NumLayers;
+		public Layers Layers = new Layers();
 	}
 
 	public class Layers : Dictionary<int, Layer>
@@ -44,25 +44,25 @@ namespace AnimationImporter.PyxelEdit
 
 	public class Layer
 	{
-		public string name;
-		public int alpha;
-		public bool hidden = false;
-		public string blendMode = "normal";
+		public string Name;
+		public int Alpha;
+		public bool Hidden = false;
+		public string BlendMode = "normal";
 
-		public TileRefs tileRefs = new TileRefs();
+		public TileRefs TileRefs = new TileRefs();
 
-		public Texture2D texture = null;
+		public Texture2D Texture = null;
 
-		public Layer(JSONObject obj)
+		public Layer(JsonObject obj)
 		{
-			name = obj["name"].Str;
-			alpha = (int)obj["alpha"].Number;
-			hidden = obj["hidden"].Boolean;
-			blendMode = obj["blendMode"].Str;
+			Name = obj["name"].Str;
+			Alpha = (int)obj["alpha"].Number;
+			Hidden = obj["hidden"].Boolean;
+			BlendMode = obj["blendMode"].Str;
 
 			foreach (var item in obj["tileRefs"].Obj)
 			{
-				tileRefs[int.Parse(item.Key)] = new TileRef(item.Value.Obj);
+				TileRefs[int.Parse(item.Key)] = new TileRef(item.Value.Obj);
 			}
 		}
 	}
@@ -73,40 +73,40 @@ namespace AnimationImporter.PyxelEdit
 
 	public class TileRef
 	{
-		public int index;
-		public int rot;
-		public bool flipX;
+		public int Index;
+		public int Rot;
+		public bool FlipX;
 
-		public TileRef(JSONObject obj)
+		public TileRef(JsonObject obj)
 		{
-			index = (int)obj["index"].Number;
-			rot = (int)obj["rot"].Number;
-			flipX = obj["flipX"].Boolean;
+			Index = (int)obj["index"].Number;
+			Rot = (int)obj["rot"].Number;
+			FlipX = obj["flipX"].Boolean;
 		}
 	}
 
 	public class Animation
 	{
-		public string name;
-		public int baseTile = 0;
-		public int length = 7;
-		public int[] frameDurationMultipliers;
-		public int frameDuration = 200;
+		public string Name;
+		public int BaseTile = 0;
+		public int Length = 7;
+		public int[] FrameDurationMultipliers;
+		public int FrameDuration = 200;
 
-		public Animation(JSONObject value)
+		public Animation(JsonObject value)
 		{
-			name = value["name"].Str;
-			baseTile = (int)value["baseTile"].Number;
-			length = (int)value["length"].Number;
+			Name = value["name"].Str;
+			BaseTile = (int)value["baseTile"].Number;
+			Length = (int)value["length"].Number;
 
 			var list = value["frameDurationMultipliers"].Array;
-			frameDurationMultipliers = new int[list.Length];
+			FrameDurationMultipliers = new int[list.Length];
 			for (int i = 0; i < list.Length; i++)
 			{
-				frameDurationMultipliers[i] = (int)list[i].Number;
+				FrameDurationMultipliers[i] = (int)list[i].Number;
 			}
 
-			frameDuration = (int)value["frameDuration"].Number;
+			FrameDuration = (int)value["frameDuration"].Number;
 		}
 	}
 }

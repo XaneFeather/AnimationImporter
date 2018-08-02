@@ -2,144 +2,120 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace AnimationImporter
-{
-	public class AnimationImporterSharedConfig : ScriptableObject
-	{
-		private const string PREFS_PREFIX = "ANIMATION_IMPORTER_";
+namespace AnimationImporter {
+	public class AnimationImporterSharedConfig : ScriptableObject {
+		private const string PrefsPrefix = "ANIMATION_IMPORTER_";
 
 		[SerializeField]
-		private List<string> _animationNamesThatDoNotLoop = new List<string>() { "death" };
-		public List<string> animationNamesThatDoNotLoop { get { return _animationNamesThatDoNotLoop; } }
+#pragma warning disable IDE0044 // Add readonly modifier
+		private List<string> animationNamesThatDoNotLoop = new List<string>() { "death" };
+#pragma warning restore IDE0044 // Add readonly modifier
+		public List<string> AnimationNamesThatDoNotLoop { get { return animationNamesThatDoNotLoop; } }
 
 		[SerializeField]
-		private bool _automaticImporting = false;
-
-		public bool automaticImporting
-		{
-			get
-			{
-				return _automaticImporting;
+		private bool automaticImporting = false;
+		public bool AutomaticImporting {
+			get {
+				return automaticImporting;
 			}
-			set
-			{
-				_automaticImporting = value;
-			}
-		}
-
-		// sprite import values
-		[SerializeField]
-		private float _spritePixelsPerUnit = 100f;
-		public float spritePixelsPerUnit
-		{
-			get
-			{
-				return _spritePixelsPerUnit;
-			}
-			set
-			{
-				_spritePixelsPerUnit = value;
+			set {
+				automaticImporting = value;
 			}
 		}
 
 		[SerializeField]
-		private AnimationTargetObjectType _targetObjectType = AnimationTargetObjectType.SpriteRenderer;
-		public AnimationTargetObjectType targetObjectType
-		{
-			get
-			{
-				return _targetObjectType;
+		private float spritePixelsPerUnit = 100f;
+		public float SpritePixelsPerUnit {
+			get {
+				return spritePixelsPerUnit;
 			}
-			set
-			{
-				_targetObjectType = value;
+			set {
+				spritePixelsPerUnit = value;
 			}
 		}
 
 		[SerializeField]
-		private SpriteAlignment _spriteAlignment = SpriteAlignment.BottomCenter;
-		public SpriteAlignment spriteAlignment
-		{
-			get
-			{
-				return _spriteAlignment;
+		private AnimationTargetObjectType targetObjectType = AnimationTargetObjectType.SpriteRenderer;
+		public AnimationTargetObjectType TargetObjectType {
+			get {
+				return targetObjectType;
 			}
-			set
-			{
-				_spriteAlignment = value;
+			set {
+				targetObjectType = value;
 			}
 		}
 
 		[SerializeField]
-		private float _spriteAlignmentCustomX = 0;
-		public float spriteAlignmentCustomX
-		{
-			get
-			{
-				return _spriteAlignmentCustomX;
+		private SpriteAlignment spriteAlignment = SpriteAlignment.BottomCenter;
+		public SpriteAlignment SpriteAlignment {
+			get {
+				return spriteAlignment;
 			}
-			set
-			{
-				_spriteAlignmentCustomX = value;
+			set {
+				spriteAlignment = value;
 			}
 		}
 
 		[SerializeField]
-		private float _spriteAlignmentCustomY = 0;
-		public float spriteAlignmentCustomY
-		{
-			get
-			{
-				return _spriteAlignmentCustomY;
+		private float spriteAlignmentCustomX = 0;
+		public float SpriteAlignmentCustomX {
+			get {
+				return spriteAlignmentCustomX;
 			}
-			set
-			{
-				_spriteAlignmentCustomY = value;
+			set {
+				spriteAlignmentCustomX = value;
 			}
 		}
 
 		[SerializeField]
-		private AssetTargetLocation _spritesTargetLocation = new AssetTargetLocation(AssetTargetLocationType.SubDirectory, "Sprites");
-		public AssetTargetLocation spritesTargetLocation
-		{
-			get { return _spritesTargetLocation; }
-			set { _spritesTargetLocation = value; }
+		private float spriteAlignmentCustomY = 0;
+		public float SpriteAlignmentCustomY {
+			get {
+				return spriteAlignmentCustomY;
+			}
+			set {
+				spriteAlignmentCustomY = value;
+			}
 		}
 
 		[SerializeField]
-		private AssetTargetLocation _animationsTargetLocation = new AssetTargetLocation(AssetTargetLocationType.SubDirectory, "Animations");
-		public AssetTargetLocation animationsTargetLocation
-		{
-			get { return _animationsTargetLocation; }
-			set { _animationsTargetLocation = value; }
+		private AssetTargetLocation spritesTargetLocation = new AssetTargetLocation(AssetTargetLocationType.SubDirectory, "Sprites");
+		public AssetTargetLocation SpritesTargetLocation {
+			get { return spritesTargetLocation; }
+			set { spritesTargetLocation = value; }
 		}
 
 		[SerializeField]
-		private AssetTargetLocation _animationControllersTargetLocation = new AssetTargetLocation(AssetTargetLocationType.SameDirectory, "Animations");
-		public AssetTargetLocation animationControllersTargetLocation
-		{
-			get { return _animationControllersTargetLocation; }
-			set { _animationControllersTargetLocation = value; }
+		private AssetTargetLocation animationsTargetLocation = new AssetTargetLocation(AssetTargetLocationType.SubDirectory, "Animations");
+		public AssetTargetLocation AnimationsTargetLocation {
+			get { return animationsTargetLocation; }
+			set { animationsTargetLocation = value; }
 		}
 
-		private SpriteNamingScheme _spriteNamingScheme = SpriteNamingScheme.Classic;
-		public SpriteNamingScheme spriteNamingScheme
-		{
-			get { return _spriteNamingScheme; }
-			set { _spriteNamingScheme = value; }
+		[SerializeField]
+		private AssetTargetLocation animationControllersTargetLocation = new AssetTargetLocation(AssetTargetLocationType.SameDirectory, "Animations");
+		public AssetTargetLocation AnimationControllersTargetLocation {
+			get { return animationControllersTargetLocation; }
+			set { animationControllersTargetLocation = value; }
 		}
 
-		public void RemoveAnimationThatDoesNotLoop(int index)
-		{
-			animationNamesThatDoNotLoop.RemoveAt(index);
+		[SerializeField]
+		private SpriteNamingScheme spriteNamingScheme = SpriteNamingScheme.Classic;
+		public SpriteNamingScheme SpriteNamingScheme {
+			get { return spriteNamingScheme; }
+			set { spriteNamingScheme = value; }
 		}
 
-		public bool AddAnimationThatDoesNotLoop(string animationName)
-		{
-			if (string.IsNullOrEmpty(animationName) || animationNamesThatDoNotLoop.Contains(animationName))
+		public void RemoveAnimationThatDoesNotLoop(int index) {
+			AnimationNamesThatDoNotLoop.RemoveAt(index);
+		}
+
+		public bool AddAnimationThatDoesNotLoop(string animationName) {
+			if (string.IsNullOrEmpty(animationName) || AnimationNamesThatDoNotLoop.Contains(animationName)) {
 				return false;
+			}
 
-			animationNamesThatDoNotLoop.Add(animationName);
+			AnimationNamesThatDoNotLoop.Add(animationName);
 
 			return true;
 		}
@@ -148,77 +124,59 @@ namespace AnimationImporter
 		/// Specify if the Unity user has preferences for an older version of AnimationImporter
 		/// </summary>
 		/// <returns><c>true</c>, if the user has old preferences, <c>false</c> otherwise.</returns>
-		public bool UserHasOldPreferences()
-		{
-			var pixelsPerUnityKey = PREFS_PREFIX + "spritePixelsPerUnit";
+		public bool UserHasOldPreferences() {
+			var pixelsPerUnityKey = PrefsPrefix + "spritePixelsPerUnit";
 			return PlayerPrefs.HasKey(pixelsPerUnityKey) || EditorPrefs.HasKey(pixelsPerUnityKey);
 		}
-	
-		private bool HasKeyInPreferences(string key)
-		{
+
+		private bool HasKeyInPreferences(string key) {
 			return PlayerPrefs.HasKey(key) || EditorPrefs.HasKey(key);
 		}
 
-		private int GetIntFromPreferences(string intKey)
-		{
-			if (PlayerPrefs.HasKey(intKey))
-			{
+		private int GetIntFromPreferences(string intKey) {
+			if (PlayerPrefs.HasKey(intKey)) {
 				return PlayerPrefs.GetInt(intKey);
 			}
-			else if (EditorPrefs.HasKey(intKey))
-			{
+			else if (EditorPrefs.HasKey(intKey)) {
 				return EditorPrefs.GetInt(intKey);
 			}
-			else
-			{
+			else {
 				return int.MinValue;
 			}
 		}
 
-		private float GetFloatFromPreferences(string floatKey)
-		{
-			if (PlayerPrefs.HasKey(floatKey))
-			{
+		private float GetFloatFromPreferences(string floatKey) {
+			if (PlayerPrefs.HasKey(floatKey)) {
 				return PlayerPrefs.GetFloat(floatKey);
 			}
-			else if (EditorPrefs.HasKey(floatKey))
-			{
+			else if (EditorPrefs.HasKey(floatKey)) {
 				return EditorPrefs.GetFloat(floatKey);
 			}
-			else
-			{
+			else {
 				return float.NaN;
 			}
 		}
 
-		private bool GetBoolFromPreferences(string boolKey)
-		{
-			if (PlayerPrefs.HasKey(boolKey))
-			{
+		private bool GetBoolFromPreferences(string boolKey) {
+			if (PlayerPrefs.HasKey(boolKey)) {
 				return System.Convert.ToBoolean(PlayerPrefs.GetInt(boolKey));
 			}
-			else if (EditorPrefs.HasKey(boolKey))
-			{
+			else if (EditorPrefs.HasKey(boolKey)) {
 				return EditorPrefs.GetBool(boolKey);
 			}
-			else
-			{
+			else {
 				return false;
 			}
 		}
 
-		private string GetStringFromPreferences(string stringKey)
-		{
-			if (PlayerPrefs.HasKey(stringKey))
-			{
+		private string GetStringFromPreferences(string stringKey) {
+			if (PlayerPrefs.HasKey(stringKey)) {
 				return PlayerPrefs.GetString(stringKey);
 			}
-			else if (EditorPrefs.HasKey(stringKey))
-			{
+			else if (EditorPrefs.HasKey(stringKey)) {
 				return EditorPrefs.GetString(stringKey);
 			}
-			else
-			{
+			else {
 				return string.Empty;
 			}
 		}

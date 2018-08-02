@@ -9,14 +9,14 @@ namespace AnimationImporter
 {
 	public class AnimationImportJob
 	{
-		private string _assetPath;
+		private string assetPath;
 
-		public string name { get { return Path.GetFileNameWithoutExtension(fileName); } }
-		public string fileName { get { return Path.GetFileName(_assetPath); } }
-		public string assetDirectory { get { return GetBasePath(_assetPath); } }
+		public string Name { get { return Path.GetFileNameWithoutExtension(FileName); } }
+		public string FileName { get { return Path.GetFileName(assetPath); } }
+		public string AssetDirectory { get { return GetBasePath(assetPath); } }
 
 		private string _directoryPathForSprites = "";
-		public string directoryPathForSprites
+		public string DirectoryPathForSprites
 		{
 			get
 			{
@@ -34,7 +34,7 @@ namespace AnimationImporter
 		}
 
 		private string _directoryPathForAnimations = "";
-		public string directoryPathForAnimations
+		public string DirectoryPathForAnimations
 		{
 			get
 			{
@@ -52,7 +52,7 @@ namespace AnimationImporter
 		}
 
 		private string _directoryPathForAnimationControllers = "";
-		public string directoryPathForAnimationControllers
+		public string DirectoryPathForAnimationControllers
 		{
 			get
 			{
@@ -69,21 +69,21 @@ namespace AnimationImporter
 			}
 		}
 
-		public string imageAssetFilename
+		public string ImageAssetFilename
 		{
 			get
 			{
-				return directoryPathForSprites + "/" + name + ".png";
+				return DirectoryPathForSprites + "/" + Name + ".png";
 			}
 		}
 
-		public PreviousImportSettings previousImportSettings = null;
+		public PreviousImportSettings PreviousImportSettings = null;
 
 		// additional import settings
-		public string additionalCommandLineArguments = null;
-		public bool createUnityAnimations = true;
-		public ImportAnimatorController importAnimatorController = ImportAnimatorController.None;
-		public bool useExistingAnimatorController = false;
+		public string AdditionalCommandLineArguments = null;
+		public bool CreateUnityAnimations = true;
+		public ImportAnimatorController ImportAnimatorController = ImportAnimatorController.None;
+		public bool UseExistingAnimatorController = false;
 
 		// ================================================================================
 		//  constructor
@@ -91,7 +91,7 @@ namespace AnimationImporter
 
 		public AnimationImportJob(string assetPath)
 		{
-			_assetPath = assetPath;
+			this.assetPath = assetPath;
 		}
 
 		// ================================================================================
@@ -99,10 +99,10 @@ namespace AnimationImporter
 		// --------------------------------------------------------------------------------
 
 		public delegate void ProgressUpdatedDelegate(float progress);
-		public event ProgressUpdatedDelegate progressUpdated;
+		public event ProgressUpdatedDelegate ProgressUpdated;
 
 		private float _progress = 0;
-		public float progress
+		public float Progress
 		{
 			get
 			{
@@ -114,9 +114,9 @@ namespace AnimationImporter
 		{
 			_progress = progress;
 
-			if (progressUpdated != null)
+			if (ProgressUpdated != null)
 			{
-				progressUpdated(_progress);
+				ProgressUpdated(_progress);
 			}
 		}
 

@@ -2,33 +2,30 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace AnimationImporter
-{
-	public class ImportedAnimationFrame
-	{
+namespace AnimationImporter {
+	public class ImportedAnimationFrame {
 		// ================================================================================
-		//  naming
+		//  Naming
 		// --------------------------------------------------------------------------------
 
-		private string _name;
-		public string name
-		{
-			get { return _name; }
-			set { _name = value; }
+		private string name;
+		public string Name {
+			get { return name; }
+			set { name = value; }
 		}
 
 		// ================================================================================
-		//  properties
+		//  Properties
 		// --------------------------------------------------------------------------------
 
-		public int x;
-		public int y;
-		public int width;
-		public int height;
+		public int X;
+		public int Y;
+		public int Width;
+		public int Height;
 
-		public int duration; // in milliseconds as part of an animation
+		public int Duration; // in milliseconds as part of an animation
 
 		// reference to the Sprite that was created with this frame information
-		public Sprite sprite = null;
+		public Sprite Sprite = null;
 	}
 }

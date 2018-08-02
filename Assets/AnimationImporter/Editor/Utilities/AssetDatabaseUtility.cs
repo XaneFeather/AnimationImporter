@@ -12,7 +12,7 @@ namespace AnimationImporter
 		public const char UnityDirectorySeparator = '/';
 		public const string ResourcesFolderName = "Resources";
 
-		public static string projectPath
+		public static string ProjectPath
 		{
 			get
 			{
@@ -105,7 +105,7 @@ namespace AnimationImporter
 				return null;
 			}
 
-			path = path.Remove(projectPath);
+			path = path.Remove(ProjectPath);
 
 			if (path.StartsWith("\\"))
 			{

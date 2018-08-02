@@ -2,69 +2,66 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace AnimationImporter
-{
-	public class ImportedAnimation
-	{
-		public string name;
+namespace AnimationImporter {
+	public class ImportedAnimation {
+		public string Name;
 
-		public ImportedAnimationFrame[] frames = null;
+		public ImportedAnimationFrame[] Frames = null;
 
-		public bool isLooping = true;
+		public bool IsCategory = false;
+		public bool IsLooping = true;
 
-		// duration of each frame
+		// Duration of each frame
 		private List<float> timings = null;
 
-		// final animation clip; saved here for usage when building the AnimatorController
-		public AnimationClip animationClip;
+		// Final animation clip; saved here for usage when building the AnimatorController
+		public AnimationClip AnimationClip;
 
 		// ================================================================================
-		//  temporary data, only used for first import
+		//  Temporary data, only used for first import
 		// --------------------------------------------------------------------------------
 
-		// assuming all sprites are in some array/list and an animation is defined as a continous list of indices
-		public int firstSpriteIndex;
-		public int lastSpriteIndex;
+		// Assuming all sprites are in some array/list and an animation is defined as a continous list of indices
+		public int FirstSpriteIndex;
+		public int LastSpriteIndex;
 
-		// used with the indices because we to not have the Frame array yet
-		public int Count
-		{
-			get
-			{
-				return lastSpriteIndex - firstSpriteIndex + 1;
+		// Used with the indices because we to not have the Frame array yet
+		public int Count {
+			get {
+				return LastSpriteIndex - FirstSpriteIndex + 1;
 			}
 		}
 
 		// ================================================================================
-		//  public methods
+		//  Public methods
 		// --------------------------------------------------------------------------------
 
-		public void SetFrames(ImportedAnimationFrame[] frames)
-		{
-			this.frames = frames;
+		public void SetFrames(ImportedAnimationFrame[] frames) {
+			this.Frames = frames;
 
 			CalculateKeyFrameTimings();
+		}
+
+		public bool IsInAnimation(ImportedAnimation animation) {
+			return this.FirstSpriteIndex >= animation.FirstSpriteIndex && this.LastSpriteIndex <= animation.LastSpriteIndex;
 		}
 
 		// ================================================================================
 		//  Key Frames
 		// --------------------------------------------------------------------------------
 
-		public float GetKeyFrameTime(int i)
-		{
+		public float GetKeyFrameTime(int i) {
 			return timings[i];
 		}
 
-		public float GetLastKeyFrameTime(float frameRate)
-		{
+		public float GetLastKeyFrameTime(float frameRate) {
 			float timePoint = GetKeyFrameTime(Count);
 			timePoint -= (1f / frameRate);
 
 			return timePoint;
 		}
 
-		private void CalculateKeyFrameTimings()
-		{
+		private void CalculateKeyFrameTimings() {
 			float timeCount;
 			timings = new List<float>();
 
@@ -72,10 +69,9 @@ namespace AnimationImporter
 			timeCount = 0;
 			timings.Add(timeCount);
 
-			for (int k = 0; k < frames.Length; k++)
-			{
+			for (int k = 0; k < Frames.Length; k++) {
 				// add duration of frame in seconds
-				timeCount += frames[k].duration / 1000f;
+				timeCount += Frames[k].Duration / 1000f;
 				timings.Add(timeCount);
 			}
 		}
